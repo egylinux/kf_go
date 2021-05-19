@@ -39,16 +39,40 @@ func NewManager(connector DBConnector) *Manager {
 	CheckUserTable(psqlconn)
 }*/
 
-func (m *Manager) IsExist(userName, pasword string) (bool, error) {
-	q := fmt.Sprintf(`Select * from userstb where username='%s' and password ='%s'`, userName, pasword)
+func (m *Manager) GetAll() (bool, error) {
+	q := fmt.Sprintf(`Select * from userstb `)
+
 	usrs := make([]User, 0)
-	if err := m.connector.Select(usrs, q); err != nil {
+
+	if err := m.connector.Select(&usrs, q); err != nil {
+
 		return false, err
 	}
+	fmt.Println(usrs)
+	return true, nil
+}
+func (m *Manager) IsExist(userName, pasword string) (bool, error) {
+	q := fmt.Sprintf(`Select * from userstb where username='%s' and password ='%s'`, userName, pasword)
+	fmt.Println(q)
+	usrs := make([]User, 0)
 
+	if err := m.connector.Select(&usrs, q); err != nil {
+
+		return false, err
+	}
+	fmt.Println(usrs)
 	return true, nil
 }
 
+func (m *Manager) GetByID(Id int, err error) (*User, error) {
+	q := fmt.Sprintf(`Select * from userstb where Id=%d `, Id)
+	user := &User{}
+	if err := m.connector.Get(user, q); err != nil {
+		return &User{}, err
+	}
+
+	return user, nil
+}
 func (m *Manager) Get(userName, pasword string) (*User, error) {
 	q := fmt.Sprintf(`Select * from userstb where username='%s' and password ='%s'`, userName, pasword)
 	user := &User{}
