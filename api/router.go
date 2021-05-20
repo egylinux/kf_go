@@ -27,7 +27,7 @@ func NewRouter(manager UserManager) *echo.Echo {
 func (u *UsersRouter) GetUser(c echo.Context) error {
 	uname := c.QueryParam("u")
 	pass := c.QueryParam("p")
-
+c.Bind()
 	exist, err := u.manager.Get(uname, pass)
 	fmt.Println(exist)
 	if err != nil {
