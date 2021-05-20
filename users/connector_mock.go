@@ -10,7 +10,9 @@ type ConnectorMock struct {
 }
 
 func (c *ConnectorMock) Get(dest interface{}, query string, args ...interface{}) error {
-
+	if strings.Contains(query, "admin") {
+		return errors.New("reading user expection ")
+	}
 	return nil
 }
 
