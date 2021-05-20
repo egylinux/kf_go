@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/egylinux/kf_go/api"
 	"github.com/egylinux/kf_go/db"
 	"github.com/egylinux/kf_go/users"
 	_ "github.com/lib/pq"
+	"github.com/urfave/cli/v2"
+	"os"
 )
 
 const (
@@ -18,19 +19,9 @@ const (
 
 func main() {
 	// build services
-	dbConnector, err := db.NewConnector("postgres", fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname))
 
-	if err != nil {
-		fmt.Println("DB Error: ", err.Error())
-		return
-	}
-
-	usersMgr := users.NewManager(dbConnector)
-	router := api.NewRouter(usersMgr)
-
-	router.Logger.Fatal(router.Start(":1323"))
 	//pass username,password from cli
-	/*var uname, pass string
+	 var uname, pass string
 	app := cli.NewApp()
 	app.Flags = []cli.Flag{
 		&cli.StringFlag{Destination: &uname, Name: "u", Value: "root", Usage: "Specify username. Default is root"},
@@ -49,7 +40,7 @@ func main() {
 		fmt.Println("DB Error: ", err.Error())
 		return
 	}
-
+	//dbConnector.Exec()
 	usersMgr := users.NewManager(dbConnector)
 
 	//exist,err:=usersMgr.GetAll()
@@ -62,7 +53,7 @@ func main() {
 
 	if exist{
 		fmt.Println("User is found")
-	}*/
+	}
 	/*result := CheckUser(uname, pass)
 	fmt.Println(result)*/
 }

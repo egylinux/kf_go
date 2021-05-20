@@ -1,6 +1,7 @@
 package users
 
 import (
+	 "database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
 	_ "github.com/urfave/cli/v2"
@@ -15,6 +16,7 @@ type Manager struct {
 type DBConnector interface {
 	Get(dest interface{}, query string, args ...interface{}) error
 	Select(dest interface{}, query string, args ...interface{}) error
+	Exec(query string, args ...interface{}) (sql.Result, error)
 }
 
 // NewManager inistantiate user manager
@@ -81,6 +83,15 @@ func (m *Manager) Get(userName, pasword string) (*User, error) {
 	}
 
 	return user, nil
+}
+func (m *Manager) Add(user *User) (bool, error) {
+	q := fmt.Sprintf(`Insert Into userstb(username,password,fullname) values('%s','%s','%s')`, user.Username, user.Password,user.Fullname)
+
+	if _,err := m.connector.Exec( q); err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
 /*func CheckUserTable(psqlconn string) {
