@@ -11,6 +11,7 @@ type UserManager interface {
 	GetAll() (bool, error)
 	IsExist(userName, pasword string) (bool, error)
 	Get(userName, pasword string) (*users.User, error)
+	Add(user *users.User) (bool, error)
 }
 
 type UsersRouter struct {
@@ -21,6 +22,7 @@ func NewRouter(manager UserManager) *echo.Echo {
 	router := UsersRouter{manager: manager}
 	r := echo.New()
 	r.Add(http.MethodGet, "/users", router.GetUser)
+	r.Add(http.MethodPost, "/adduser", router.AddUser)
 	return r
 }
 
@@ -35,6 +37,24 @@ func (u *UsersRouter) GetUser(c echo.Context) error {
 	}
 
 	return c.String(http.StatusOK, "User is found")
+}
+
+func (u *UsersRouter) AddUser(c echo.Context) error {
+
+	user:= new(users.User)
+	if err := c.Bind(user); err != nil {
+		fmt.Println("Error",err.Error())
+		return err
+	}
+
+
+	_, err := u.manager.Add(user)
+	//fmt.Println(exist)
+	if err != nil {
+		return c.String(http.StatusOK, "Error while saving , "+err.Error())
+	}
+
+	return c.String(http.StatusOK, "Saved Successfully")
 }
 
 /*func getUserById(c echo.Context) error {
