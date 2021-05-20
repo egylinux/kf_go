@@ -87,7 +87,7 @@ func (m *Manager) Get(userName, pasword string) (*User, error) {
 func (m *Manager) Add(user *User) (bool, error) {
 	q := fmt.Sprintf(`Insert Into userstb(username,password,fullname) values('%s','%s','%s')`, user.Username, user.Password,user.Fullname)
 
-	if _,err := m.connector.Exec( q); err != nil {
+	if _,err := m.connector.Exec(q); err != nil {
 		return false, err
 	}
 

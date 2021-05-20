@@ -1,27 +1,30 @@
 package users
 
 import (
-	"fmt"
-	import "github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
-type UsersTest struct {
-	manager UserManager
-	mock.Mock
-}
 
-type UserManager interface {
-	GetAll() (bool, error)
-	IsExist(userName, pasword string) (bool, error)
-	Get(userName, pasword string) (*User, error)
-	Add(user *User) (bool, error)
-}
+func TestAdd(t *testing.T) {
+	// Arrange
+	fakeConn := &ConnectorMock{}
+	mgr := NewManager(fakeConn)
+	usr := &User{Username: "Ayman", Password: "aaaa", Fullname: "Ayman Hassan"}
 
-func (u *UsersTest) GetUser() {
-	ret := u.Called()
-	expected := User{Id: 1}
+	// Act
+	ok, err := mgr.Add(usr)
 
-	actual,_ := u.manager.Get("Admin","123")
-	if actual.Id != expected.Id {
-		fmt.Printf("Test failed, expected: '%d', got:  '%d'", expected.Id, actual.Id)
-	}
+	// Assert
+	assert.Equal(t, true, ok)
+	assert.Equal(t, nil, err)
+
+	usr=&User{Username: "Ali", Password: "aaaa", Fullname: "Ayman Hassan"}
+	// Act
+
+	ok, err = mgr.Add(usr)
+
+	// Assert
+	assert.Equal(t, false, ok)
+	assert.False(t, ok)
+	assert.Error(t, err)
 }
