@@ -1,0 +1,47 @@
+version: 2.1
+jobs:
+  build_re_enricher:
+    docker:
+      - image: circleci/golang:1.13-stretch-node
+    working_directory: /go/src/github.com/egylinux/kf_go
+    steps:
+      - checkout
+      - run: go get -u golang.org/x/lint/golint
+      - run: make lint
+      - run:
+          name: Test
+          command: make test
+      - run: make test-coverage
+      - run:
+          name: Build
+          command: make build
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - bin
+            - settings.yaml
+            - setvars.sh
+  generate_bin:
+    docker:
+      - image: circleci/golang:1.13-stretch-node
+    working_directory: /go/src/github.com/egylinux/kf_go
+    steps:
+      - checkout
+
+workflows:
+  re-enricher:
+    jobs:
+      - build_re_enricher:
+          filters:
+            tags:
+              only: /.*/
+      - generate-bin:
+          requires:
+            - build_re_enricher
+          store_artifacts:
+            - bin
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+(\.\d+)?(\.\d+)?$/
