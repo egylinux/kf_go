@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  build_re_enricher:
+  build_kf:
     docker:
       - image: circleci/golang:1.13-stretch-node
     working_directory: /go/src/github.com/egylinux/kf_go
@@ -14,7 +14,7 @@ jobs:
       - run: make test-coverage
       - run:
           name: Build
-          command: make build
+          command: go build
       - persist_to_workspace:
           root: ./
           paths:
@@ -29,9 +29,9 @@ jobs:
       - checkout
 
 workflows:
-  re-enricher:
+  kf-flow:
     jobs:
-      - build_re_enricher:
+      - build_kf:
           filters:
             tags:
               only: /.*/
