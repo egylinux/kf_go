@@ -35,7 +35,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - generate-bin:
+      - generate_bin:
           requires:
             - build_re_enricher
           store_artifacts:
